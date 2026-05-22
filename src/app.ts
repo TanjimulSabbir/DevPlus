@@ -2,6 +2,7 @@ import type { Application } from "express";
 import express from "express";
 import { AuthRouter } from "./modules/auth/auth.routes";
 import { globalErrorHandler } from "./middleware/error.middleware";
+import { Issuesrouter } from "./modules/issues/issue.route";
 
 const app: Application = express();
 app.use(express.json());
@@ -14,6 +15,7 @@ app.get("/", (req, res) => {
   });
 });
 app.use("/api/auth", AuthRouter);
+app.use("/api/issues", Issuesrouter);
 
 app.use(globalErrorHandler);
 export default app;

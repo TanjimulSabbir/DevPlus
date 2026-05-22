@@ -1,0 +1,44 @@
+{
+  "name": "assignment-02",
+  "version": "1.0.0",
+  "description": "This is nodejs and raw sql practice project",
+  "keywords": [
+    "nodejs",
+    "postgreSQL",
+    "expressjs",
+    "jwt"
+  ],
+  "homepage": "https://github.com/TanjimulSabbir/DevPlus#readme",
+  "bugs": {
+    "url": "https://github.com/TanjimulSabbir/DevPlus/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TanjimulSabbir/DevPlus.git"
+  },
+  "license": "ISC",
+  "author": "Tanjimul Islam Sabbir",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "tsc src/server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.21.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^6.0.3"
+  }
+}

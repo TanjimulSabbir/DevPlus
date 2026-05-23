@@ -118,7 +118,13 @@ export const IssueService = {
     );
 
     if (issueResult.rows.length === 0) {
-      throw new AppError(404, "Issue not found");
+      throw new AppError(404, "Issue not found", [
+        {
+          field: "issues",
+          message: "Issue not found",
+          code: "NOT_FOUND",
+        },
+      ]);
     }
 
     const issue = issueResult.rows[0];
@@ -154,7 +160,13 @@ export const IssueService = {
     );
 
     if (issueResult.rows.length === 0) {
-      throw new AppError(404, "Issue not found");
+      throw new AppError(404, "Issue not found", [
+        {
+          field: "issues",
+          message: "Issue not found",
+          code: "NOT_FOUND",
+        },
+      ]);
     }
 
     const issue = issueResult.rows[0];

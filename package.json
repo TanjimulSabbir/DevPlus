@@ -22,6 +22,7 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc",
+    "start":"npx tsx && node dist/server.js",
     "dev": "tsx watch src/server.ts",
     "test": "tsc src/server.js"
   },

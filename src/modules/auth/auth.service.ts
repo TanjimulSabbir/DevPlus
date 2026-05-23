@@ -13,10 +13,22 @@ export const AuthService = {
     ]);
 
     if (existing.rows.length > 0) {
-      throw new AppError(409, "Email Already Exists");
+      throw new AppError(409, "Email Already Exists", [
+        {
+          field: "email",
+          message: "Email Already Exists",
+          code: "DUPLICATE_VALUE",
+        },
+      ]);
     }
     if (role && !UserRoles.includes(role)) {
-      throw new AppError(400, "Invalid role provided.");
+      throw new AppError(400, "Invalid role provided.", [
+        {
+          field: "role",
+          message: "Invalid role provided.",
+          code: "INVALID_ROLE",
+        },
+      ]);
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
@@ -36,10 +48,15 @@ export const AuthService = {
     const result = await pool.query(`SELECT * FROM users WHERE email=$1`, [
       email,
     ]);
-    console.log(result)
 
     if (result.rows.length === 0) {
-      throw new AppError(404, "User Not Found");
+      throw new AppError(404, "User Not Found", [
+        {
+          field: "email",
+          code: "NOT_FOUND",
+          message: "user email is not found",
+        },
+      ]);
     }
 
     const user = result.rows[0];
@@ -47,7 +64,13 @@ export const AuthService = {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      throw new AppError(401, "Invalid Credentials");
+      throw new AppError(401, "Invalid Credentials", [
+        {
+          field: "password",
+          code: "INVALID_PASSWORD",
+          message: "password is invalid",
+        },
+      ]);
     }
 
     const token = generateToken({

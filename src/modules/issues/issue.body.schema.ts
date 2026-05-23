@@ -19,3 +19,11 @@ export const updateIssueSchema = z
     reporter_id: z.coerce.number().int().positive().optional(),
   })
   .strict();
+
+export const getIssuesQuerySchema = z
+  .object({
+    sort: z.enum(["newest", "oldest"]).optional(),
+    type: z.enum(IssueType).optional(),
+    status: z.enum(IssueStatus).optional(),
+  })
+  .strict();

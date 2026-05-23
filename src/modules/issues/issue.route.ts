@@ -18,7 +18,7 @@ import {
 
 const router = Router();
 
-router.post("/", authMiddleware, validate(createIssueSchema), createIssue);
+router.post("/", authMiddleware,  roleMiddleware("maintainer", "contributor"), validate(createIssueSchema), createIssue);
 
 router.get(
   "/",

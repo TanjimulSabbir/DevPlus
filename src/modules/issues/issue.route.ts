@@ -9,16 +9,18 @@ import {
 } from "./issue.controller";
 import { authMiddleware } from "../../middleware/auth.middleware";
 import { roleMiddleware } from "../../middleware/role.middleware";
+import { validate } from "../../middleware/data.validation";
+import { createIssueSchema, updateIssueSchema } from "./body.schema";
 
 const router = Router();
 
-router.post("/", authMiddleware, createIssue);
+router.post("/", authMiddleware, validate(createIssueSchema), createIssue);
 
 router.get("/", getAllIssues);
 
 router.get("/:id", getSingleIssue);
 
-router.patch("/:id", authMiddleware, updateIssue);
+router.patch("/:id", authMiddleware,  validate(updateIssueSchema), updateIssue);
 
 router.delete(
   "/:id",

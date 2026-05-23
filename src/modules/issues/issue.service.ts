@@ -12,7 +12,13 @@ export const IssueService = {
     );
 
     if (existing.rows.length > 0) {
-      throw new AppError(409, "Issue with this title already exists");
+      throw new AppError(409, "Issue with this title already exists", [
+        {
+          field: "title",
+          message: "This title is already taken. Please use a unique title.",
+          code: "DUPLICATE_VALUE",
+        },
+      ]);
     }
 
     const result = await pool.query(

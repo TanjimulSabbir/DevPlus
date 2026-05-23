@@ -13,4 +13,5 @@ export type TUpdateIssue = {
   description?: string;
   type?: TIssueType;
   status?: TIssueStatus;
+  reporter_id?: "contributor" | "maintainer";
 };

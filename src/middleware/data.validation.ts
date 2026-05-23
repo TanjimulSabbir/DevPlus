@@ -20,6 +20,5 @@ export const validate =
         })),
       );
     }
-
     next();
   };

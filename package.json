@@ -1,5 +1,5 @@
 {
-  "name": "assignment-02",
+  "name": "DevPlus",
   "version": "1.0.0",
   "description": "This is nodejs and raw sql practice project",
   "keywords": [
@@ -18,14 +18,13 @@
   },
   "license": "ISC",
   "author": "Tanjimul Islam Sabbir",
-  "type": "module",
   "main": "server.js",
   "scripts": {
-    "build": "tsc",
-    "start":"npx tsx && node dist/server.js",
-    "dev": "tsx watch src/server.ts",
-    "test": "tsc src/server.js"
+    "build": "tsup",
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts"
   },
+  "type": "module",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
@@ -35,6 +34,7 @@
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.21.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.22.3",
     "zod": "^4.4.3"
   },

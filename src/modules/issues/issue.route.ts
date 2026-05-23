@@ -20,11 +20,28 @@ const router = Router();
 
 router.post("/", authMiddleware, validate(createIssueSchema), createIssue);
 
-router.get("/", validate(getIssuesQuerySchema, "query"), getAllIssues);
+router.get(
+  "/",
+  authMiddleware,
+  roleMiddleware("maintainer", "contributor"),
+  validate(getIssuesQuerySchema, "query"),
+  getAllIssues,
+);
 
-router.get("/:id", getSingleIssue);
+router.get(
+  "/:id",
+  authMiddleware,
+  roleMiddleware("maintainer", "contributor"),
+  getSingleIssue,
+);
 
-router.patch("/:id", authMiddleware, validate(updateIssueSchema), updateIssue);
+router.patch(
+  "/:id",
+  authMiddleware,
+  roleMiddleware("maintainer", "contributor"),
+  validate(updateIssueSchema),
+  updateIssue,
+);
 
 router.delete(
   "/:id",

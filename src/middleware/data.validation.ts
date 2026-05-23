@@ -3,18 +3,22 @@ import { z } from "zod";
 import { AppError } from "../utils/app.error";
 
 export const validate =
-  (schema: z.ZodObject<any>) =>
+  (schema: z.ZodTypeAny, target: "body" | "query" = "body") =>
   (req: Request, _res: Response, next: NextFunction) => {
-    try {
-      req.body = schema.parse(req.body);
-      next();
-    } catch (err: any) {
-      const errors =
-        err?.issues?.map((issue: any) => ({
+    const data = target === "body" ? req.body : req.query;
+
+    const result = schema.safeParse(data);
+
+    if (!result.success) {
+      throw new AppError(
+        400,
+        "Validation Error",
+        result.error.issues.map((issue) => ({
           field: issue.path.join("."),
           message: issue.message,
-        })) || [];
-
-      throw new AppError(400, "Validation Error", errors);
+          code: issue.code,
+        })),
+      );
     }
+    next();
   };

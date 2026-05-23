@@ -1,5 +1,13 @@
 import { Router } from "express";
 
+import { authMiddleware } from "../../middleware/auth.middleware";
+import { validate } from "../../middleware/data.validation";
+import { roleMiddleware } from "../../middleware/role.middleware";
+import {
+  createIssueSchema,
+  getIssuesQuerySchema,
+  updateIssueSchema,
+} from "./issue.body.schema";
 import {
   createIssue,
   deleteIssue,
@@ -7,20 +15,33 @@ import {
   getSingleIssue,
   updateIssue,
 } from "./issue.controller";
-import { authMiddleware } from "../../middleware/auth.middleware";
-import { roleMiddleware } from "../../middleware/role.middleware";
-import { validate } from "../../middleware/data.validation";
-import { createIssueSchema, updateIssueSchema } from "./issue.body.schema";
 
 const router = Router();
 
-router.post("/", authMiddleware, validate(createIssueSchema), createIssue);
+router.post("/", authMiddleware,  roleMiddleware("maintainer", "contributor"), validate(createIssueSchema), createIssue);
 
-router.get("/", getAllIssues);
+router.get(
+  "/",
+  authMiddleware,
+  roleMiddleware("maintainer", "contributor"),
+  validate(getIssuesQuerySchema, "query"),
+  getAllIssues,
+);
 
-router.get("/:id", getSingleIssue);
+router.get(
+  "/:id",
+  authMiddleware,
+  roleMiddleware("maintainer", "contributor"),
+  getSingleIssue,
+);
 
-router.patch("/:id", authMiddleware,  validate(updateIssueSchema), updateIssue);
+router.patch(
+  "/:id",
+  authMiddleware,
+  roleMiddleware("maintainer", "contributor"),
+  validate(updateIssueSchema),
+  updateIssue,
+);
 
 router.delete(
   "/:id",

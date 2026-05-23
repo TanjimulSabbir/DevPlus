@@ -9,6 +9,9 @@ import { verifyToken } from "../../utils/jwt";
 import { config } from "../../config";
 import { error } from "node:console";
 import { AppError } from "../../utils/app.error";
+import type { TIssueStatus, TIssueType } from "./issue.interface";
+import { IssueStatus, IssueType } from "./constant";
+import { getIssuesQuerySchema } from "./issue.body.schema";
 
 export const createIssue = asyncHandler(async (req: Request, res: Response) => {
   const result = await IssueService.createIssue(req.body, req.user.id);
@@ -24,12 +27,26 @@ export const createIssue = asyncHandler(async (req: Request, res: Response) => {
 
 export const getAllIssues = asyncHandler(
   async (req: Request, res: Response) => {
-    const { sort, type, status } = req.query;
+    const validationResult = getIssuesQuerySchema.safeParse(req.query);
+
+    if (!validationResult.success) {
+      throw new AppError(
+        400,
+        "Invalid query parameters",
+        validationResult.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+          code: issue.code,
+        })),
+      );
+    }
+
+    const { sort, type, status } = validationResult.data;
 
     const result = await IssueService.getAllIssues(
-      sort as string,
-      type as string,
-      status as string,
+      sort as "newest" | "oldest",
+      type as TIssueType,
+      status as TIssueStatus,
     );
 
     sendResponse(

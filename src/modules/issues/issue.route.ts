@@ -10,7 +10,7 @@ import {
 import { authMiddleware } from "../../middleware/auth.middleware";
 import { roleMiddleware } from "../../middleware/role.middleware";
 import { validate } from "../../middleware/data.validation";
-import { createIssueSchema, updateIssueSchema } from "./body.schema";
+import { createIssueSchema, updateIssueSchema } from "./issue.body.schema";
 
 const router = Router();
 

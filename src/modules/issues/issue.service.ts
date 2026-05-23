@@ -36,61 +36,78 @@ export const IssueService = {
     return result.rows[0];
   },
 
-  getAllIssues: async (sort = "newest", type?: string, status?: string) => {
-    let query = `SELECT * FROM issues`;
-    const values: string[] = [];
+  getAllIssues: async (
+    sort: "newest" | "oldest" = "newest",
+    type?: string,
+    status?: string,
+  ) => {
+    let query = `
+    SELECT 
+      i.id,
+      i.title,
+      i.description,
+      i.type,
+      i.status,
+      i.created_at,
+      i.updated_at,
+      u.id AS reporter_id,
+      u.name AS reporter_name,
+      u.role AS reporter_role
+    FROM issues i
+    LEFT JOIN users u ON i.reporter_id = u.id
+  `;
+
+    const values: any[] = [];
     const conditions: string[] = [];
 
+    // Filters
     if (type) {
       values.push(type);
-      conditions.push(`type = $${values.length}`);
+      conditions.push(`i.type = $${values.length}`);
     }
 
     if (status) {
       values.push(status);
-      conditions.push(`status = $${values.length}`);
+      conditions.push(`i.status = $${values.length}`);
     }
 
     if (conditions.length > 0) {
       query += ` WHERE ${conditions.join(" AND ")}`;
     }
 
-    query += `
-      ORDER BY created_at
-      ${sort === "oldest" ? "ASC" : "DESC"}
-    `;
+    // Sorting
+    query += ` ORDER BY i.created_at ${sort === "oldest" ? "ASC" : "DESC"}`;
 
-    const issuesResult = await pool.query(query, values);
+    const result = await pool.query(query, values);
+    const rows = result.rows;
 
-    const issues = issuesResult.rows;
-
-    const formattedIssues = [];
-
-    for (const issue of issues) {
-      const reporterResult = await pool.query(
-        `
-        SELECT id, name, role
-        FROM users
-        WHERE id = $1
-        `,
-        [issue.reporter_id],
-      );
-
-      formattedIssues.push({
-        id: issue.id,
-        title: issue.title,
-        description: issue.description,
-        type: issue.type,
-        status: issue.status,
-        reporter: reporterResult.rows[0],
-        created_at: issue.created_at,
-        updated_at: issue.updated_at,
-      });
+    if (rows.length === 0) {
+      throw new AppError(404, "No issues found", [
+        {
+          field: "issues",
+          message: "No issues match the given filters",
+          code: "NOT_FOUND",
+        },
+      ]);
     }
 
-    return formattedIssues;
+    return rows.map((row) => ({
+      id: row.id,
+      title: row.title,
+      description: row.description,
+      type: row.type,
+      status: row.status,
+      reporter: row.reporter_id
+        ? {
+            id: row.reporter_id,
+            name: row.reporter_name,
+            role: row.reporter_role,
+          }
+        : null,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
+    }));
   },
-
   getSingleIssue: async (id: number) => {
     const issueResult = await pool.query(
       `

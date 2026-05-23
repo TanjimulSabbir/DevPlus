@@ -1,8 +1,6 @@
-import type { Request, Response } from "express";
-import { config } from "../../config";
+import bcrypt from "bcrypt";
 import { pool } from "../../database";
 import { AppError } from "../../utils/app.error";
-import bcrypt from "bcrypt";
 import { generateToken } from "../../utils/jwt";
 import type { TUserLogin, TUserSignup } from "./auth.interface";
 import { UserRoles } from "./constant";
@@ -55,7 +53,6 @@ export const AuthService = {
     const token = generateToken({
       id: user.id,
       name: user.name,
-      email: user.email,
       role: user.role,
     });
 
